@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.pyc
+
+# Logs
+*.log
+
+# Output
+output/
+
+# Cache
+cache/
+
+# Frontend
+Frontend/node_modules/
+Frontend/dist/
+
+# Environment
+.env
+
+# Dataset
+reddit_wsb.csv
+*.csv
