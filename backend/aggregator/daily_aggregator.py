@@ -1,6 +1,5 @@
 import pandas as pd
 import numpy as np
-from .feature_engineer import compute_feature_stats
 
 def aggregate_daily(df: pd.DataFrame) -> pd.DataFrame:
 
@@ -51,7 +50,7 @@ def aggregate_daily(df: pd.DataFrame) -> pd.DataFrame:
     daily["neu_ratio"] = daily["neutral_count"] / daily["num_posts"]
 
     # -----------------------------------------
-    # FEATURE STATS (NO MORE APPLY MISALIGNMENT)
+    # FEATURE STATS
     # -----------------------------------------
     stats = groups["sentiment_score"].agg(
     sentiment_min="min",

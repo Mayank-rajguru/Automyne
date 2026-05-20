@@ -4,14 +4,13 @@ import logging
 
 def merge_sentiment_stock(stock_df: pd.DataFrame, senti_df: pd.DataFrame):
     """
-    Production-grade merging of business-day stock prices with daily sentiment.
+    merging of business-day stock prices with daily sentiment.
     
     Key features:
         - Retains weekend/holiday sentiment (rolled forward to next business day)
         - No forced neutral sentiment (NaN kept if no posts)
         - Chronologically validated
         - Duplicate date handling
-        - Robust index alignment
     """
 
     stock = stock_df.copy()
@@ -21,11 +20,11 @@ def merge_sentiment_stock(stock_df: pd.DataFrame, senti_df: pd.DataFrame):
     stock = stock.sort_values("Date").reset_index(drop=True)
     senti = senti.sort_values("date").reset_index(drop=True)
 
-    # Step 1: Convert to datetime for proper merging
+    # Converting to datetime for proper merging
     stock["Date"] = pd.to_datetime(stock["Date"])
     senti["date"] = pd.to_datetime(senti["date"])
 
-    # Step 2: Expand sentiment to full date range
+    # Expand sentiment to full date range
     # Fill all calendar days (Reddit available 7 days/week)
     full_range = pd.date_range(
         senti["date"].min(), senti["date"].max(), freq="D"
@@ -33,8 +32,8 @@ def merge_sentiment_stock(stock_df: pd.DataFrame, senti_df: pd.DataFrame):
     full_senti = pd.DataFrame({"date": full_range})
     full_senti = full_senti.merge(senti, on="date", how="left")
 
-    # Step 3: Forward-fill weekend sentiment into Monday
-    # But WE DO NOT fill forward raw sentiment. We fill COUNT/AGG features properly.
+    # Forward-fill weekend sentiment into Monday
+    # But WE DO NOT fill forward raw sentiment. We fill MEAN/MEDIAN features properly.
     full_senti["avg_sentiment"] = full_senti["avg_sentiment"].ffill()
     full_senti["median_sentiment"] = full_senti["median_sentiment"].ffill()
     full_senti["sentiment_std"] = full_senti["sentiment_std"].ffill()
