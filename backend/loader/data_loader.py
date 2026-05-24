@@ -1,8 +1,12 @@
 import pandas as pd
 import logging
 from .cleaner import clean_text, build_ticker_regex
+from pathlib import Path
 
-CSV_PATH = "../../data/reddit_wsb.csv"
+BASE_DIR = Path(__file__).resolve().parent.parent.parent
+
+CSV_PATH = BASE_DIR / "data" / "reddit_wsb.csv"
+
 
 def load_and_standardize(path: str = CSV_PATH) -> pd.DataFrame:
     logging.info(f"Loading CSV: {path}")

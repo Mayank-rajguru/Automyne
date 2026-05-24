@@ -34,6 +34,7 @@ function AppHeader({ onSearch, searchOpen, setSearchOpen, onMenuClick }) {
                   Automyne
                 </h1>
               </div>
+              
             </div>
           </div>
 
