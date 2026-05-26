@@ -3,7 +3,7 @@ import logging
 from .cleaner import clean_text, build_ticker_regex
 from pathlib import Path
 
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
+BASE_DIR = Path(__file__).resolve().parent.parent
 
 CSV_PATH = BASE_DIR / "data" / "reddit_wsb.csv"
 
