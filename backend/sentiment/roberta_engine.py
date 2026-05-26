@@ -18,7 +18,11 @@ class RobertaSentimentEngine:
 
         # load model + tokenizer
         self.tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
-        self.model = AutoModelForSequenceClassification.from_pretrained(MODEL_NAME).to(self.device)
+        self.model = AutoModelForSequenceClassification.from_pretrained(
+            MODEL_NAME,
+            device_map=None
+        )
+        logging.info(f"Model loaded on {self.device}")
         self.model.eval()
 
         # cache file

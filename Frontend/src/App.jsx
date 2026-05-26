@@ -39,10 +39,11 @@ ChartJS.register(
 
 export default function App() {
   const [activeTicker, setActiveTicker] = useState("GME");
+  const [displayedTicker, setDisplayedTicker] = useState("GME");
   const [activeView, setActiveView] = useState("dashboard");
   const [cache, setCache] = useState({});
   const [data, setData] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [loadingTicker, setLoadingTicker] = useState(null);
   const [searchOpen, setSearchOpen] = useState(false);
 
   // Mobile Sidebar State
@@ -55,23 +56,24 @@ export default function App() {
   useEffect(() => {
     async function fetchData() {
       // =========================
-      // 1. Return cached data
+      // Cached ticker
       // =========================
 
       if (cache[activeTicker]) {
-        console.log(`Using cached data for ${activeTicker}`);
+        setLoadingTicker(null);
 
         setData(cache[activeTicker]);
+
+        setDisplayedTicker(activeTicker);
 
         return;
       }
 
       // =========================
-      // 2. Fetch from backend
+      // New ticker
       // =========================
 
-      setLoading(true);
-
+      setLoadingTicker(activeTicker);
 
       try {
         const result = await fetchTickerData(activeTicker);
@@ -82,21 +84,20 @@ export default function App() {
           return;
         }
 
-        // =========================
-        // 3. Save in cache
-        // =========================
-
         setCache((prev) => ({
           ...prev,
 
           [activeTicker]: result.data,
         }));
 
+        // IMPORTANT:
+        // Update ONLY after fetch finishes
+
         setData(result.data);
-      } catch (err) {
-        console.error(err);
+
+        setDisplayedTicker(activeTicker);
       } finally {
-        setLoading(false);
+        setLoadingTicker(null);
       }
     }
 
@@ -191,11 +192,11 @@ export default function App() {
           {activeView === "dashboard" ? (
             <DashboardView
               data={data}
-              ticker={activeTicker}
+              ticker={displayedTicker}
               activeTicker={activeTicker}
               onSubscribe={() => handleToggleSubscription(activeTicker)}
               isSubscribed={subscriptions[activeTicker]}
-              loading={loading}
+              loading={!!loadingTicker}
             />
           ) : (
             <NotificationsView
